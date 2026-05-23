@@ -1,0 +1,249 @@
+/* ===== SPRITE ANIMATION ENGINE ===== */
+/* Using CSS @keyframes + background-position for sprite sheet animation */
+/* No manual slicing needed - pure CSS-driven animations */
+
+/* Base sprite element styles */
+.sprite {
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* ===== WALK CYCLE (4 frames, horizontal) ===== */
+/* walk.png: 4 frames @ 100px each */
+.sprite-walk {
+  width: 100px;
+  height: 100px;
+  background-image: url('/my-day/assets/walk/walk.png');
+  background-size: 400px 100px; /* Full width: 4 frames × 100px */
+  animation: walk-cycle 0.8s steps(4) infinite;
+}
+
+@keyframes walk-cycle {
+  0% { background-position: 0 0; }
+  25% { background-position: -100px 0; }
+  50% { background-position: -200px 0; }
+  75% { background-position: -300px 0; }
+  100% { background-position: -400px 0; }
+}
+
+/* ===== IDLE (static pose) ===== */
+.sprite-idle {
+  width: 100px;
+  height: 100px;
+  background-image: url('/my-day/assets/character/idle.png');
+  background-size: cover;
+  background-position: center;
+}
+
+/* ===== ACTIVITY SPRITES ===== */
+/* Each activity sprite (3-4 frames, irregular widths) */
+
+/* Bath (3 frames) */
+.sprite-bath {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/bath.png');
+  background-size: auto 100%;
+  animation: activity-bath 1.2s steps(3) infinite;
+}
+
+@keyframes activity-bath {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Breakfast (3 frames) */
+.sprite-breakfast {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/breakfast.png');
+  background-size: auto 100%;
+  animation: activity-breakfast 1.2s steps(3) infinite;
+}
+
+@keyframes activity-breakfast {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* School (3 frames) */
+.sprite-school {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/school.png');
+  background-size: auto 100%;
+  animation: activity-school 1.2s steps(3) infinite;
+}
+
+@keyframes activity-school {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Home (2 frames) */
+.sprite-home {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/home.png');
+  background-size: auto 100%;
+  animation: activity-home 1s steps(2) infinite;
+}
+
+@keyframes activity-home {
+  0% { background-position: 0 0; }
+  50% { background-position: -120px 0; }
+  100% { background-position: -240px 0; }
+}
+
+/* Lunch (3 frames) */
+.sprite-lunch {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/lunch.png');
+  background-size: auto 100%;
+  animation: activity-lunch 1.2s steps(3) infinite;
+}
+
+@keyframes activity-lunch {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Music (3 frames) */
+.sprite-music {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/music.png');
+  background-size: auto 100%;
+  animation: activity-music 1.2s steps(3) infinite;
+}
+
+@keyframes activity-music {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Ball/Sports (3 frames) */
+.sprite-ball {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/ball.png');
+  background-size: auto 100%;
+  animation: activity-ball 1.2s steps(3) infinite;
+}
+
+@keyframes activity-ball {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Park (4 frames, irregular) */
+.sprite-park {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/park.png');
+  background-size: auto 100%;
+  animation: activity-park 1.2s steps(4) infinite;
+}
+
+@keyframes activity-park {
+  0% { background-position: 0 0; }
+  25% { background-position: -100px 0; }
+  50% { background-position: -250px 0; }
+  75% { background-position: -500px 0; }
+  100% { background-position: -650px 0; }
+}
+
+/* Read (3 frames) */
+.sprite-read {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/read.png');
+  background-size: auto 100%;
+  animation: activity-read 1.2s steps(3) infinite;
+}
+
+@keyframes activity-read {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* TV (3 frames) */
+.sprite-tv {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/tv.png');
+  background-size: auto 100%;
+  animation: activity-tv 1.2s steps(3) infinite;
+}
+
+@keyframes activity-tv {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Dinner (3 frames) */
+.sprite-dinner {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/dinner.png');
+  background-size: auto 100%;
+  animation: activity-dinner 1.2s steps(3) infinite;
+}
+
+@keyframes activity-dinner {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* Sleep (3 frames) */
+.sprite-sleep {
+  width: 120px;
+  height: 120px;
+  background-image: url('/my-day/assets/scenes/sleep.png');
+  background-size: auto 100%;
+  animation: activity-sleep 1.2s steps(3) infinite;
+}
+
+@keyframes activity-sleep {
+  0% { background-position: 0 0; }
+  33% { background-position: -120px 0; }
+  66% { background-position: -240px 0; }
+  100% { background-position: -360px 0; }
+}
+
+/* ===== ANIMATION CONTROL CLASSES ===== */
+/* Pause animations (show first frame) */
+.sprite.paused {
+  animation-play-state: paused;
+  background-position: 0 0 !important;
+}
+
+/* Slow motion (for replay scenes) */
+.sprite.slow-motion {
+  animation-duration: 2s;
+}
+
+/* Fast forward (for quick transitions) */
+.sprite.fast-forward {
+  animation-duration: 0.4s;
+}

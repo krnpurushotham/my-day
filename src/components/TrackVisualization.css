@@ -84,19 +84,32 @@
   right: 10%;
 }
 
-.character-display {
+/* Character positioning along timeline */
+.character-container {
   position: absolute;
   bottom: 100px;
-  left: 50%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 80px;
-  background-color: rgba(255, 200, 124, 0.8);
-  border-radius: 50%;
-  border: 2px solid rgba(255, 180, 100, 0.9);
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40px;
+}
+
+.character-container .sprite {
+  display: block;
+}
+
+/* Time display */
+.time-indicator {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 5;
 }
