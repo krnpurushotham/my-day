@@ -59,7 +59,7 @@ git push -u origin main
 3. Set Source to "GitHub Actions"
 4. The workflow will automatically deploy on push to main
 
-Your app will be live at: `https://YOUR_USERNAME.github.io/my-day/`
+Your app will be live at: `https://krnpurushotham.github.io/my-day/`
 
 > **Important:** Update the base path in `vite.config.js` if your repo name differs from `my-day`:
 > ```js
