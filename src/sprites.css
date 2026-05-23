@@ -14,7 +14,7 @@
 .sprite-walk {
   width: 100px;
   height: 100px;
-  background-image: url('/my-day/assets/walk/walk.png');
+  background-image: url('../assets/walk/walk.png');
   background-size: 400px 100px; /* Full width: 4 frames × 100px */
   animation: walk-cycle 0.8s steps(4) infinite;
 }
@@ -31,7 +31,7 @@
 .sprite-idle {
   width: 100px;
   height: 100px;
-  background-image: url('/my-day/assets/character/idle.png');
+  background-image: url('../assets/character/idle.png');
   background-size: cover;
   background-position: center;
 }
@@ -43,7 +43,7 @@
 .sprite-bath {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/bath.png');
+  background-image: url('../assets/scenes/bath.png');
   background-size: auto 100%;
   animation: activity-bath 1.2s steps(3) infinite;
 }
@@ -59,7 +59,7 @@
 .sprite-breakfast {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/breakfast.png');
+  background-image: url('../assets/scenes/breakfast.png');
   background-size: auto 100%;
   animation: activity-breakfast 1.2s steps(3) infinite;
 }
@@ -75,7 +75,7 @@
 .sprite-school {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/school.png');
+  background-image: url('../assets/scenes/school.png');
   background-size: auto 100%;
   animation: activity-school 1.2s steps(3) infinite;
 }
@@ -91,7 +91,7 @@
 .sprite-home {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/home.png');
+  background-image: url('../assets/scenes/home.png');
   background-size: auto 100%;
   animation: activity-home 1s steps(2) infinite;
 }
@@ -106,7 +106,7 @@
 .sprite-lunch {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/lunch.png');
+  background-image: url('../assets/scenes/lunch.png');
   background-size: auto 100%;
   animation: activity-lunch 1.2s steps(3) infinite;
 }
@@ -122,7 +122,7 @@
 .sprite-music {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/music.png');
+  background-image: url('../assets/scenes/music.png');
   background-size: auto 100%;
   animation: activity-music 1.2s steps(3) infinite;
 }
@@ -138,7 +138,7 @@
 .sprite-ball {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/ball.png');
+  background-image: url('../assets/scenes/ball.png');
   background-size: auto 100%;
   animation: activity-ball 1.2s steps(3) infinite;
 }
@@ -154,7 +154,7 @@
 .sprite-park {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/park.png');
+  background-image: url('../assets/scenes/park.png');
   background-size: auto 100%;
   animation: activity-park 1.2s steps(4) infinite;
 }
@@ -171,7 +171,7 @@
 .sprite-read {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/read.png');
+  background-image: url('../assets/scenes/read.png');
   background-size: auto 100%;
   animation: activity-read 1.2s steps(3) infinite;
 }
@@ -187,7 +187,7 @@
 .sprite-tv {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/tv.png');
+  background-image: url('../assets/scenes/tv.png');
   background-size: auto 100%;
   animation: activity-tv 1.2s steps(3) infinite;
 }
@@ -203,7 +203,7 @@
 .sprite-dinner {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/dinner.png');
+  background-image: url('../assets/scenes/dinner.png');
   background-size: auto 100%;
   animation: activity-dinner 1.2s steps(3) infinite;
 }
@@ -219,7 +219,7 @@
 .sprite-sleep {
   width: 120px;
   height: 120px;
-  background-image: url('/my-day/assets/scenes/sleep.png');
+  background-image: url('../assets/scenes/sleep.png');
   background-size: auto 100%;
   animation: activity-sleep 1.2s steps(3) infinite;
 }

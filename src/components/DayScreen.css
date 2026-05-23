@@ -106,7 +106,7 @@
   transform: translateX(-50%);
   width: 80px;
   height: 80px;
-  background-image: url('/assets/character/idle.png');
+  background-image: url('../assets/character/idle.png');
   background-size: cover;
   background-position: center;
   z-index: 10;
