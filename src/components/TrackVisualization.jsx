@@ -3,12 +3,15 @@ import Character from './Character';
 import './TrackVisualization.css';
 
 export default function TrackVisualization({ events }) {
-  const [currentActivity, setCurrentActivity] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentActivityName, setCurrentActivityName] = useState(null);
+  const [isWalking, setIsWalking] = useState(false);
+  const [characterPosition, setCharacterPosition] = useState(0);
+  const [lastActivityTime, setLastActivityTime] = useState(null);
 
-  // Update current time and activity every minute
+  // Update time and activity tracking
   useEffect(() => {
-    const updateCurrentActivity = () => {
+    const updateState = () => {
       const now = new Date();
       setCurrentTime(now);
 
@@ -17,35 +20,56 @@ export default function TrackVisualization({ events }) {
       const currentTimeStr = `${currentHour}:${currentMinute}`;
 
       // Find the current or most recent activity
-      const currentOrPastActivity = events
-        .filter(e => e.time <= currentTimeStr)
-        .sort((a, b) => b.time.localeCompare(a.time))[0];
+      const sortedEvents = events.sort((a, b) => b.time.localeCompare(a.time));
+      const currentOrPastActivity = sortedEvents.find(e => e.time <= currentTimeStr);
 
-      setCurrentActivity(currentOrPastActivity?.name || null);
+      if (currentOrPastActivity) {
+        setCurrentActivityName(currentOrPastActivity.name);
+        
+        // Check if we just transitioned to a new activity
+        if (lastActivityTime !== currentOrPastActivity.time) {
+          setLastActivityTime(currentOrPastActivity.time);
+          // Trigger walk animation when activity changes
+          setIsWalking(true);
+          setTimeout(() => setIsWalking(false), 1000); // Walk for 1 second
+        }
+      } else {
+        setCurrentActivityName(null);
+      }
     };
 
-    updateCurrentActivity();
-    const interval = setInterval(updateCurrentActivity, 60000); // Update every minute
+    updateState();
+    const interval = setInterval(updateState, 60000); // Update every minute
 
     return () => clearInterval(interval);
-  }, [events]);
+  }, [events, lastActivityTime]);
 
-  // Calculate character position along the timeline (0-100%)
-  const getCharacterPosition = () => {
-    const now = new Date();
-    const wakeTime = 6; // 6 AM
-    const sleepTime = 22; // 10 PM
-    const totalHours = sleepTime - wakeTime;
-    const currentHour = now.getHours() + now.getMinutes() / 60;
+  // Calculate character position along the timeline
+  useEffect(() => {
+    const calculatePosition = () => {
+      const now = new Date();
+      const wakeTime = 6; // 6 AM
+      const sleepTime = 22; // 10 PM
+      const totalHours = sleepTime - wakeTime;
+      const currentHour = now.getHours() + now.getMinutes() / 60;
 
-    if (currentHour < wakeTime) return 0;
-    if (currentHour > sleepTime) return 100;
+      let position = 0;
+      if (currentHour < wakeTime) {
+        position = 0;
+      } else if (currentHour > sleepTime) {
+        position = 100;
+      } else {
+        position = ((currentHour - wakeTime) / totalHours) * 100;
+      }
 
-    const position = ((currentHour - wakeTime) / totalHours) * 100;
-    return Math.max(0, Math.min(100, position));
-  };
+      setCharacterPosition(Math.max(0, Math.min(100, position)));
+    };
 
-  const characterPosition = getCharacterPosition();
+    calculatePosition();
+    const interval = setInterval(calculatePosition, 30000); // Update every 30 seconds for smooth movement
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="track-visualization">
@@ -63,27 +87,51 @@ export default function TrackVisualization({ events }) {
         </div>
       </div>
 
-      {/* Character positioned along the timeline */}
+      {/* Timeline labels showing wake and sleep times */}
+      <div className="timeline-labels">
+        <span className="label-time">6 AM</span>
+        <span className="label-time">9 AM</span>
+        <span className="label-time">12 PM</span>
+        <span className="label-time">3 PM</span>
+        <span className="label-time">6 PM</span>
+        <span className="label-time">9 PM</span>
+      </div>
+
+      {/* Character positioned along the timeline with smooth movement */}
       <div
-        className="character-container"
+        className={`character-container ${isWalking ? 'walking' : ''}`}
         style={{
           left: `${characterPosition}%`,
-          transition: 'left 1s ease-in-out',
+          transition: isWalking ? 'none' : 'left 30s linear',
         }}
       >
         <Character
-          currentActivity={currentActivity}
-          isWalking={false}
+          activityName={currentActivityName}
+          isWalking={isWalking}
           isPaused={false}
+          animationSpeed="normal"
         />
       </div>
 
       {/* Time indicator */}
       <div className="time-indicator">
-        {currentTime.toLocaleTimeString([], {
-          hour: '2-digit',
-          minute: '2-digit',
-        })}
+        <span className="time-display">
+          {currentTime.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </span>
+        <span className="activity-display">
+          {currentActivityName ? `📍 ${currentActivityName}` : 'Sleeping...'}
+        </span>
+      </div>
+
+      {/* Progress bar showing day progress */}
+      <div className="day-progress-bar">
+        <div
+          className="progress-fill"
+          style={{ width: `${characterPosition}%` }}
+        ></div>
       </div>
     </div>
   );

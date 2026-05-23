@@ -1,0 +1,65 @@
+.character-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sprite {
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+/* Activity label/hint */
+.activity-label {
+  position: absolute;
+  bottom: -30px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* State-specific styling */
+.sprite.state-walking {
+  /* Walking state - slightly brighter */
+  filter: brightness(1.05);
+}
+
+.sprite.state-activity {
+  /* Activity state - highlight */
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+}
+
+.sprite.state-idle {
+  /* Idle state - normal */
+  filter: none;
+}
+
+/* Pause state */
+.sprite.paused {
+  animation-play-state: paused !important;
+}
+
+/* Speed modifiers */
+.sprite.slow-motion {
+  animation-duration: 2s !important;
+}
+
+.sprite.fast-forward {
+  animation-duration: 0.4s !important;
+}
