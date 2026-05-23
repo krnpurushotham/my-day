@@ -282,3 +282,34 @@
     font-size: 10px;
   }
 }
+
+/* === REPLAY MODE STYLING === */
+
+.track-visualization.replay-mode {
+  /* Dim the background during replay */
+  filter: brightness(0.7) blur(2px);
+  pointer-events: none;
+  transition: filter 0.3s ease;
+}
+
+.track-visualization.replay-mode .time-indicator {
+  display: none;
+}
+
+.track-visualization.replay-mode .replay-button {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Ensure replay overlay stays visible and interactive */
+.replay-overlay {
+  pointer-events: auto;
+}
+
+.replay-dim {
+  pointer-events: auto;
+}
+
+.replay-card {
+  pointer-events: auto;
+}

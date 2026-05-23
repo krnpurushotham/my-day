@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import Character from './Character';
+import ReplayButton from './ReplayButton';
+import ReplayOverlay from './ReplayOverlay';
 import './TrackVisualization.css';
 
 export default function TrackVisualization({ events }) {
@@ -10,13 +12,19 @@ export default function TrackVisualization({ events }) {
   const [pauseAtActivity, setPauseAtActivity] = useState(null);
   const [lastActivityTime, setLastActivityTime] = useState(null);
 
-  // Helper: Convert time string to hours decimal (e.g., "14:30" = 14.5)
+  // Replay state
+  const [isReplaying, setIsReplaying] = useState(false);
+  const [replayProgress, setReplayProgress] = useState(0);
+  const [replayActivityName, setReplayActivityName] = useState(null);
+  const [replayPosition, setReplayPosition] = useState(0);
+
+  // Helper: Convert time string to hours decimal
   const timeToHours = (timeStr) => {
     const [hours, minutes] = timeStr.split(':').map(Number);
     return hours + minutes / 60;
   };
 
-  // Helper: Convert hours decimal to timeline position (0-100%)
+  // Helper: Convert hours decimal to timeline position
   const hoursToPosition = (hours) => {
     const wakeTime = 6;
     const sleepTime = 22;
@@ -29,8 +37,10 @@ export default function TrackVisualization({ events }) {
     return Math.max(0, Math.min(100, position));
   };
 
-  // Update time and activity tracking
+  // Update normal time and activity tracking
   useEffect(() => {
+    if (isReplaying) return; // Skip during replay
+
     const updateState = () => {
       const now = new Date();
       setCurrentTime(now);
@@ -38,40 +48,24 @@ export default function TrackVisualization({ events }) {
       const currentHour = String(now.getHours()).padStart(2, '0');
       const currentMinute = String(now.getMinutes()).padStart(2, '0');
       const currentTimeStr = `${currentHour}:${currentMinute}`;
-      const currentHourDecimal = timeToHours(currentTimeStr);
 
-      // Find current or most recent activity
       const sortedEvents = events.sort((a, b) => b.time.localeCompare(a.time));
       const currentOrPastActivity = sortedEvents.find(e => e.time <= currentTimeStr);
 
       if (currentOrPastActivity) {
         setCurrentActivityName(currentOrPastActivity.name);
 
-        // Check if we just transitioned to a new activity
         if (lastActivityTime !== currentOrPastActivity.time) {
           setLastActivityTime(currentOrPastActivity.time);
           setIsWalking(true);
-          setTimeout(() => setIsWalking(false), 1200); // Walk for 1.2 seconds
+          setTimeout(() => setIsWalking(false), 1200);
         }
 
-        // Calculate pause position for current activity
         const activityHours = timeToHours(currentOrPastActivity.time);
-        const nextActivity = sortedEvents.find(e => e.time > currentOrPastActivity.time);
-        const nextActivityHours = nextActivity ? timeToHours(nextActivity.time) : 22; // Sleep time
-
-        // Find next activity after this one
-        const allFutureActivities = events.filter(e => e.time > currentOrPastActivity.time);
-        const nextActualActivity = allFutureActivities.length > 0 
-          ? allFutureActivities[0] 
-          : null;
-
-        // Position: center of activity duration
-        const pausePosition = hoursToPosition(activityHours);
         setPauseAtActivity({
           name: currentOrPastActivity.name,
-          position: pausePosition,
+          position: hoursToPosition(activityHours),
           startTime: currentOrPastActivity.time,
-          nextStartTime: nextActualActivity?.time,
         });
       } else {
         setCurrentActivityName(null);
@@ -80,40 +74,85 @@ export default function TrackVisualization({ events }) {
     };
 
     updateState();
-    const interval = setInterval(updateState, 30000); // Update every 30 seconds
-
+    const interval = setInterval(updateState, 30000);
     return () => clearInterval(interval);
-  }, [events, lastActivityTime]);
+  }, [events, lastActivityTime, isReplaying]);
 
-  // Calculate character position along timeline
+  // Update normal character position
   useEffect(() => {
+    if (isReplaying) return; // Skip during replay
+
     const calculatePosition = () => {
       const now = new Date();
-      const wakeTime = 6;
-      const sleepTime = 22;
-      const totalHours = sleepTime - wakeTime;
       const currentHour = now.getHours() + now.getMinutes() / 60;
-
-      let position = 0;
-      if (currentHour < wakeTime) {
-        position = 0;
-      } else if (currentHour > sleepTime) {
-        position = 100;
-      } else {
-        position = ((currentHour - wakeTime) / totalHours) * 100;
-      }
-
-      setCharacterPosition(Math.max(0, Math.min(100, position)));
+      const position = hoursToPosition(currentHour);
+      setCharacterPosition(position);
     };
 
     calculatePosition();
-    const interval = setInterval(calculatePosition, 10000); // Update every 10 seconds for smoother movement
-
+    const interval = setInterval(calculatePosition, 10000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isReplaying]);
+
+  // Replay animation logic
+  useEffect(() => {
+    if (!isReplaying) return;
+
+    const startTime = Date.now();
+    const sortedEvents = events.sort((a, b) => a.time.localeCompare(b.time));
+    const eventDuration = 2500; // 2.5 seconds per activity
+    const totalDuration = sortedEvents.length * eventDuration;
+
+    const animateReplay = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / 1000, sortedEvents.length * 2.5); // Convert to seconds
+
+      setReplayProgress(progress);
+
+      // Calculate which activity is current
+      const currentEventIndex = Math.floor((elapsed / eventDuration) % sortedEvents.length);
+      if (currentEventIndex < sortedEvents.length) {
+        const event = sortedEvents[currentEventIndex];
+        setReplayActivityName(event.name);
+
+        // Calculate position for this activity
+        const activityHours = timeToHours(event.time);
+        setReplayPosition(hoursToPosition(activityHours));
+      }
+
+      // Check if replay is complete
+      if (elapsed >= totalDuration) {
+        setIsReplaying(false);
+        setReplayProgress(0);
+        setReplayActivityName(null);
+      } else {
+        requestAnimationFrame(animateReplay);
+      }
+    };
+
+    const frameId = requestAnimationFrame(animateReplay);
+    return () => cancelAnimationFrame(frameId);
+  }, [isReplaying, events]);
+
+  const handleReplayStart = () => {
+    if (events.length === 0) return;
+    setIsReplaying(true);
+    setReplayProgress(0);
+  };
+
+  const handleReplayComplete = () => {
+    setIsReplaying(false);
+    setReplayProgress(0);
+    setReplayActivityName(null);
+  };
+
+  // Use replay data if replaying, otherwise use normal data
+  const displayPosition = isReplaying ? replayPosition : characterPosition;
+  const displayActivity = isReplaying ? replayActivityName : currentActivityName;
+  const displayIsWalking = isReplaying ? false : isWalking;
 
   return (
-    <div className="track-visualization">
+    <div className={`track-visualization ${isReplaying ? 'replay-mode' : ''}`}>
       <div className="track-background">
         <div className="sky"></div>
         <div className="clouds">
@@ -128,7 +167,7 @@ export default function TrackVisualization({ events }) {
         </div>
       </div>
 
-      {/* Timeline labels showing wake and sleep times */}
+      {/* Timeline labels */}
       <div className="timeline-labels">
         <span className="label-time">6 AM</span>
         <span className="label-time">9 AM</span>
@@ -138,8 +177,8 @@ export default function TrackVisualization({ events }) {
         <span className="label-time">9 PM</span>
       </div>
 
-      {/* Activity pause zone indicator */}
-      {pauseAtActivity && (
+      {/* Activity pause zone */}
+      {pauseAtActivity && !isReplaying && (
         <div
           className="activity-pause-zone"
           style={{
@@ -150,40 +189,42 @@ export default function TrackVisualization({ events }) {
         </div>
       )}
 
-      {/* Character positioned along the timeline */}
+      {/* Character positioned along timeline */}
       <div
-        className={`character-container ${isWalking ? 'walking' : 'paused'}`}
+        className={`character-container ${displayIsWalking ? 'walking' : 'paused'}`}
         style={{
-          left: `${characterPosition}%`,
-          transition: isWalking ? 'left 1s ease-out' : 'left 10s linear',
+          left: `${displayPosition}%`,
+          transition: displayIsWalking ? 'left 1s ease-out' : 'left 0.3s ease',
         }}
       >
         <Character
-          activityName={currentActivityName}
-          isWalking={isWalking}
-          isPaused={!isWalking && currentActivityName}
-          animationSpeed={isWalking ? 'normal' : 'slow'}
+          activityName={displayActivity}
+          isWalking={displayIsWalking}
+          isPaused={!displayIsWalking && displayActivity}
+          animationSpeed={displayIsWalking ? 'normal' : 'slow'}
         />
       </div>
 
       {/* Time indicator */}
-      <div className="time-indicator">
-        <span className="time-display">
-          {currentTime.toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
-        </span>
-        <span className="activity-display">
-          {currentActivityName ? `📍 ${currentActivityName}` : 'Sleeping...'}
-        </span>
-      </div>
+      {!isReplaying && (
+        <div className="time-indicator">
+          <span className="time-display">
+            {currentTime.toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </span>
+          <span className="activity-display">
+            {currentActivityName ? `📍 ${currentActivityName}` : 'Sleeping...'}
+          </span>
+        </div>
+      )}
 
-      {/* Progress bar showing day progress */}
+      {/* Progress bar */}
       <div className="day-progress-bar">
         <div
           className="progress-fill"
-          style={{ width: `${characterPosition}%` }}
+          style={{ width: `${displayPosition}%` }}
         ></div>
       </div>
 
@@ -194,7 +235,7 @@ export default function TrackVisualization({ events }) {
             <div
               key={event.id}
               className={`timeline-dot ${
-                currentActivityName === event.name ? 'active' : ''
+                currentActivityName === event.name && !isReplaying ? 'active' : ''
               }`}
               style={{
                 left: `${hoursToPosition(timeToHours(event.time))}%`,
@@ -206,6 +247,21 @@ export default function TrackVisualization({ events }) {
           ))}
         </div>
       )}
+
+      {/* Replay button */}
+      <ReplayButton
+        onClick={handleReplayStart}
+        isReplaying={isReplaying}
+        disabled={events.length === 0}
+      />
+
+      {/* Replay overlay */}
+      <ReplayOverlay
+        events={events}
+        isReplaying={isReplaying}
+        onReplayComplete={handleReplayComplete}
+        replayProgress={replayProgress}
+      />
     </div>
   );
 }

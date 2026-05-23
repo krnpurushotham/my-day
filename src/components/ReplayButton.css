@@ -1,0 +1,78 @@
+.replay-button {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  padding: 12px 20px;
+  background: white;
+  border: 2px solid var(--color-primary);
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.replay-button:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transform: translateY(-2px);
+}
+
+.replay-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.replay-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.replay-button.replaying {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+  animation: replayPulse 1s ease-in-out infinite;
+}
+
+@keyframes replayPulse {
+  0%, 100% {
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.6);
+  }
+}
+
+.replay-icon {
+  display: block;
+  font-size: 16px;
+}
+
+.replay-text {
+  display: block;
+}
+
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  .replay-button {
+    bottom: 12px;
+    left: 12px;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .replay-text {
+    display: none;
+  }
+
+  .replay-icon {
+    margin: 0;
+  }
+}
